@@ -16,7 +16,7 @@ This automation currently provides the following installation functionality:
 - MCM Core
 - MCM Monitoring Module
 - MCM Infrastructure Management Module
-- CloudForms (with sample LDAP)
+- CloudForms ([with sample LDAP](./ldap_schema.md))
 
 In development:
 
