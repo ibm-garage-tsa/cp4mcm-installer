@@ -31,10 +31,10 @@ There are two ways this automation can be used.
 ### Executing locally
 
 **Pre-reqs**
-        - `oc` command
-        - You must be authenticated to your OpenShift cluster
-        - `make` command
-        - [IBM Entitled Registry Key](https://myibm.ibm.com/products-services/containerlibrary) 
+- `oc` command
+- You must be authenticated to your OpenShift cluster
+- `make` command
+- [IBM Entitled Registry Key](https://myibm.ibm.com/products-services/containerlibrary) 
 
 **Process**
 1. Clone repo locally:
