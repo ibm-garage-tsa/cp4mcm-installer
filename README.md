@@ -1,14 +1,13 @@
-# Installation assets for CP4MCM 2.0
+# Installation assets for CP4MCM 2.1
 
 **Note:** This project is provided **AS-IS**. Support will be provided as possible via git issues.
 
 ## Overview:
 
-This project is designed to provide an automated way to install the Cloud Pak for Multi Cloud Management v 2.0.
+This project is designed to provide an automated way to install the Cloud Pak for Multi Cloud Management v 2.1.
 
 ### Scope:
 
-IBM Cloud Pak for Multi Cloud Managment 2.0 - Online Installation
 Single replica (Non-HA) Configuration
 
 This automation currently provides the following installation functionality:
