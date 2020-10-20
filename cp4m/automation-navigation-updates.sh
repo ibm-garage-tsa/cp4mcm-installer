@@ -185,7 +185,7 @@ add_navigation_items() {
 		check_exist
 		echo "Adding new navigation items to file..."
 		inframgmt_nav_item="  - id: cloudforms\n    isAuthorized:\n    - ClusterAdministrator\n    - AccountAdministrator\n    - Administrator\n    - Operator\n    - Editor\n    - Viewer\n    label: Infrastructure management\n    parentId: automate\n    serviceId: mcm-ui\n    target: _blank\n    url: $_arg_inframgmt"
-		awk_output="$(awk -v cloud="$inframgmt_nav_item" '1;/navItems:/{print cloud}' navconfigurations.yaml)"
+		awk_output="$(awk -v cloud="$inframgmt_nav_item" '1;/ navItems:/{print cloud}' navconfigurations.yaml)"
 
 		echo "$awk_output" >navconfigurations.yaml
 	fi
@@ -196,7 +196,7 @@ add_navigation_items() {
 		product_name="Ansible Tower"
 		check_exist
 		tower_nav_item="  - id: tower\n    isAuthorized:\n    - ClusterAdministrator\n    - AccountAdministrator\n    - Administrator\n    - Operator\n    - Editor\n    - Viewer\n    label: Ansible automation\n    parentId: automate\n    serviceId: mcm-ui\n    target: _blank\n    url: $_arg_ansible_tower"
-		awk_output="$(awk -v tower="$tower_nav_item" '1;/navItems:/{print tower}' navconfigurations.yaml)"
+		awk_output="$(awk -v tower="$tower_nav_item" '1;/ navItems:/{print tower}' navconfigurations.yaml)"
 		echo "$awk_output" >navconfigurations.yaml
 	fi
 	## add Infrastructure management 
@@ -205,8 +205,8 @@ add_navigation_items() {
 		id="cloudforms"
 		product_name="Infrastructure management"
 		check_exist
-		im_nav_item="  - id: cam\n    isAuthorized:\n    - ClusterAdministrator\n    - AccountAdministrator\n    - Administrator\n    - Operator\n    - Editor\n    - Viewer\n    label: Infrastructure management\n    parentId: automate\n    serviceId: mcm-ui\n    target: _blank\n    url: $_arg_podified_nav_url"
-		awk_output="$(awk -v cam="$im_nav_item" '1;/navItems:/{print cam}' navconfigurations.yaml)"
+		im_nav_item="  - id: cloudforms\n    isAuthorized:\n    - ClusterAdministrator\n    - AccountAdministrator\n    - Administrator\n    - Operator\n    - Editor\n    - Viewer\n    label: Infrastructure management\n    parentId: automate\n    serviceId: mcm-ui\n    target: _blank\n    url: $_arg_podified_nav_url"
+		awk_output="$(awk -v cloudforms="$im_nav_item" '1;/ navItems:/{print cloudforms}' navconfigurations.yaml)"
     
 		echo "$awk_output" >navconfigurations.yaml
 	fi
