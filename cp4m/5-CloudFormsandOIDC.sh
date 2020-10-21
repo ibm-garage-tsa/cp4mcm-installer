@@ -101,6 +101,11 @@ stringData:
       Require   valid-user
       LogLevel   debug
     </Location>
+    <Location /ui/service/oidc_login>
+      AuthType                 openid-connect
+      Require                  valid-user
+      Header set Set-Cookie    "miq_oidc_access_token=%{OIDC_access_token}e; Max-Age=10; Path=/ui/service"
+    </Location>
     <LocationMatch ^/api(?!\/(v[\d\.]+\/)?product_info$)>
       SetEnvIf Authorization '^Basic +YWRtaW46'     let_admin_in
       SetEnvIf X-Auth-Token  '^.+$'                 let_api_token_in
