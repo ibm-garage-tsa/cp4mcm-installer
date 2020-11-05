@@ -59,23 +59,25 @@ export RED_HAT_PULL_SECRET_PATH="/opt/downloads/pull-secret.txt"
 
 3. Set installation parameters in the `setup_env.sh` file:
 
-*Storage Classes*
-Modify the following parameters to configure the required storage classes.
-CP4MCM_BLOCK_STORAGECLASS=""
-CP4MCM_FILE_STORAGECLASS=""
+   **Storage Classes**
 
-* If you are using ROKS you can just accept the defaults and it will use ibmc-block-gold, ibmc-file-gold and ibmc-file-gold-gid
-* If you are using OpenShift Container Storage you can accept the defaults and it will use ocs-storagecluster-ceph-rbd and ocs-storagecluster-cephfs
-* If you are using some other storage solution or you want to use storage outside of the defaults you will need to customize the storage classes
+   Modify the following parameters to configure the required storage classes.
 
+   CP4MCM_BLOCK_STORAGECLASS=""    
+   CP4MCM_FILE_STORAGECLASS=""  
 
+   * If you are using ROKS you can just accept the defaults and it will use ibmc-block-gold, ibmc-file-gold and ibmc-file-gold-gid
+   * If you are using OpenShift Container Storage you can accept the defaults and it will use ocs-storagecluster-ceph-rbd and ocs-storagecluster-cephfs
+   * If you are using some other storage solution or you want to use storage outside of the defaults you will need to customize the storage classes
 
-*CP4MCM Config*
-Modify the following values to enable\disable each of the components.
-CP4MCM_RHACM_ENABLED="true"
-CP4MCM_MONITORING="true"
-CP4MCM_INFRASTRUCTUREMANAGEMENT="true"
-CP4MCM_CLOUDFORMS="true"
+   **CP4MCM Config**
+
+   Modify the following values to enable\disable each of the components.
+
+   CP4MCM_RHACM_ENABLED="true"  
+   CP4MCM_MONITORING="true"  
+   CP4MCM_INFRASTRUCTUREMANAGEMENT="true"  
+   CP4MCM_CLOUDFORMS="true"  
 
 4. Make sure you are in the base project folder and execute the install using the Makefile
 
