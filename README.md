@@ -2,9 +2,10 @@
 
 **Note:** This project is provided **AS-IS**. Support will be provided as possible via git issues.
 
-**Updates:**
-11/4/2020 - Added support for RedHat Advanced Cluster Management
-          - Refactored installation process
+**Updates:**  
+11/4/2020
+- Added support for RedHat Advanced Cluster Management  
+- Refactored installation process
 
 ## Overview:
 
