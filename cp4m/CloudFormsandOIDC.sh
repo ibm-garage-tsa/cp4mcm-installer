@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source 0-setup_env.sh
+source setup_env.sh
 
 YOUR_CLIENT_ID=`echo There is a huge white elephant in LA zoo | base64`
 YOUR_CLIENT_SECRET=`echo 12345678901234567890123456789012345 | base64`

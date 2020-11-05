@@ -1,0 +1,57 @@
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cp4mcm-install
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cp4mcm-install-account
+  namespace: cp4mcm-install
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cp4mcm-install-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: cp4mcm-install-account
+  namespace: cp4mcm-install
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cp4mcm-install
+  namespace: cp4mcm-install
+  labels:
+    app: cp4mcm-install
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cp4mcm-install
+  template:
+    metadata:
+      labels:
+        app: cp4mcm-install
+    spec:
+      serviceAccountName: cp4mcm-install-account
+      containers:
+        - name: installer
+          image: johnowebb/cp4mcm21-installer:0.1
+          imagePullPolicy: Always
+          command: ["make"]
+          args: ["all"]
+          env:
+          - name: ENTITLED_REGISTRY_KEY
+            value: ""
+          - name: CP4MCM_RHACM_ENABLED
+            value: "false"
+          # Need to figure out a way to import this as a secret
+          # - name: RED_HAT_PULL_SECRET_PATH
+          #   value: ""

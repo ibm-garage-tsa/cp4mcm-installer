@@ -1,0 +1,14 @@
+
+
+setup_container_cluster*
+kubeconfig
+
+tmp*
+*orig.yaml
+
+navconfigurations.*
+*.log
+registration.json
+
+
+.DS_Store
