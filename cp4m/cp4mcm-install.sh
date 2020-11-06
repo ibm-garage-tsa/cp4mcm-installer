@@ -218,7 +218,7 @@ EOF
 #
 # Enable the Monitoring Module adding Monitoring Storage Config
 #
-if [[ "$CP4MCM_MONITORING" == "true" ]];
+if [[ "$CP4MCM_MONITORING_ENABLED" == "true" ]];
 then
 log "Adding Monitoring Storage Config to Installation"
 oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_NAMESPACE --type=json -p="[
@@ -282,7 +282,7 @@ fi
 #
 # Updating Installation config with CAM config.
 #
-if [[ "$CP4MCM_INFRASTRUCTUREMANAGEMENT" == "true" ]];
+if [[ "$CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED" == "true" ]];
 then
 
 if [ $ROKS != "true" ]; 
@@ -347,13 +347,23 @@ oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_
 
 fi
 
-
 #
 # Wait for CP4MCM Subscription to be created
 #
 log "Waiting for Installation to start. (180 seconds)"
 progress-bar 180
 
+#
+# Keep waiting and checking the installation progress
+#
 status
+
+#
+# Print out the route for RHACM access
+#
 rhacm_route
+
+#
+# Keep waiting and checking the installation progress
+#
 cscred
