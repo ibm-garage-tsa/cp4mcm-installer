@@ -45,8 +45,9 @@ There are two ways this automation can be used:
 
 1. Clone repo locally:
 
-```
-git clone https://github.com/ibm-garage-tsa/cp4mcm-installer.git
+```sh
+$ git clone https://github.com/ibm-garage-tsa/cp4mcm-installer.git
+$ cd cp4mcm-installer
 ```
 
 2. Export configurable variables:
@@ -103,10 +104,10 @@ EOF
 
 ```sh
 # Source the customization we've compiled
-source _customization.sh
+$ source _customization.sh
 
 # Then kick it off
-make
+$ make
 ```
 
 > Note: A `install.log` file will be generated to log the installation activities within the `_logs` folder under current folder, but you can change the folder by `export LOGDIR=<somewhere else>`.
