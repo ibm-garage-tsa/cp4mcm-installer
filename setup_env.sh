@@ -17,36 +17,36 @@ if [ -z "${ENTITLED_REGISTRY_KEY}" ]; then
   echo "You must export the ENTITLED_REGISTRY_KEY environment variable prior to running."; exit 999;
 fi
 
-ENTITLED_REGISTRY="cp.icr.io"
-ENTITLED_REGISTRY_USER="${ENTITLED_REGISTRY_USER:-cp}"       # this may be cp or ekey
-ENTITLED_REGISTRY_SECRET="ibm-management-pull-secret"
-DOCKER_EMAIL="myemail@ibm.com"
+export ENTITLED_REGISTRY="cp.icr.io"
+export ENTITLED_REGISTRY_USER="${ENTITLED_REGISTRY_USER:-cp}"       # this may be cp or ekey
+export ENTITLED_REGISTRY_SECRET="ibm-management-pull-secret"
+export DOCKER_EMAIL="myemail@ibm.com"
 
 #
 # Define you storage classes here. If you are running on ROKS or using OCS it should be 
 # able to figure it out, but if you want something custom you can specify that here.
 #
-CP4MCM_BLOCK_STORAGECLASS="${CP4MCM_BLOCK_STORAGECLASS:-}"
-CP4MCM_FILE_STORAGECLASS="${CP4MCM_FILE_STORAGECLASS:-}"
+export CP4MCM_BLOCK_STORAGECLASS="${CP4MCM_BLOCK_STORAGECLASS:-}"
+export CP4MCM_FILE_STORAGECLASS="${CP4MCM_FILE_STORAGECLASS:-}"
 
 #
 # Cloud Pak Modules to enable
 #
-CP4MCM_RHACM_ENABLED="${CP4MCM_RHACM_ENABLED:-true}"
-CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED="${CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED:-true}"
-CP4MCM_MONITORING_ENABLED="${CP4MCM_MONITORING_ENABLED:-true}"
+export CP4MCM_RHACM_ENABLED="${CP4MCM_RHACM_ENABLED:-true}"
+export CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED="${CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED:-true}"
+export CP4MCM_MONITORING_ENABLED="${CP4MCM_MONITORING_ENABLED:-true}"
 
 #
 # Cloud Pak namespace
 #
-CP4MCM_NAMESPACE="${CP4MCM_NAMESPACE:-ibm-cp4mcm}"
+export CP4MCM_NAMESPACE="${CP4MCM_NAMESPACE:-ibm-cp4mcm}"
 
 #
 # RHACM Parameters
 #
-RHACM_NAMESPACE="${CP4MCM_NAMESPACE:-open-cluster-management}"
-RHACM_SECRET_NAME="rhacm-pull-secret"
-RHACM_OPERATOR_GROUP_NAME="rhacm-operator-group"
+export RHACM_NAMESPACE="${RHACM_NAMESPACE:-open-cluster-management}"
+export RHACM_SECRET_NAME="rhacm-pull-secret"
+export RHACM_OPERATOR_GROUP_NAME="rhacm-operator-group"
 
 #
 # Attempt to detect the storage classes if they are not explicitly defined.
