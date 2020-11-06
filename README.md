@@ -43,14 +43,14 @@ There are two ways this automation can be used:
 
 **Process**
 
-1. Clone repo locally:
+#### 1. Clone repo locally:
 
 ```sh
 $ git clone https://github.com/ibm-garage-tsa/cp4mcm-installer.git
 $ cd cp4mcm-installer
 ```
 
-2. Export configurable variables:
+#### 2. Export configurable variables:
 
 There are quite some configurable variables to further customize the installation.
 
@@ -88,7 +88,6 @@ export RED_HAT_PULL_SECRET_PATH="Your Red Hat pull secret file path"
 # - If you are using ROKS you can just accept the defaults by setting it "" and it will use:
 #   - ibmc-block-gold
 #   - ibmc-file-gold
-#   - ibmc-file-gold-gid
 # - If you are using OpenShift Container Storage you can accept the defaults by setting it "" and it will use
 #   - ocs-storagecluster-ceph-rbd
 #   - ocs-storagecluster-cephfs
@@ -100,7 +99,7 @@ export CP4MCM_FILE_STORAGECLASS=""
 EOF
 ```
 
-3. Make sure you are in the base project folder and execute the install using the Makefile
+#### 3. Make sure you are in the base project folder to execute commands
 
 ```sh
 # Source the customization we've compiled
@@ -111,6 +110,39 @@ $ make
 ```
 
 > Note: A `install.log` file will be generated to log the installation activities within the `_logs` folder under current folder, but you can change the folder by `export LOGDIR=<somewhere else>`.
+
+#### 4. How to access?
+
+The log file will generate the info for you to access the CP4MCM.
+
+But you can always retrieve the required info by running this:
+
+```sh
+# CP4MCM URL
+$ oc -n ibm-common-services get route cp-console --template '{{.spec.host}}'
+```
+
+There are 2 major mechanisms to authenticate and access CP4MCM ans its components:
+
+**Type 1: Default admin account with `Default authentication` authentication type**
+
+```sh
+# CP4MCM default admin user name
+oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_username}' | base64 -d
+# CP4MCM default admin user password
+oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d
+```
+
+**Type 2: LDAP users with `Enterprise LDAP` authentication type**
+
+By default, the users within `operations` group are imported as admins as well:
+- bob
+- laura
+- josie
+- tom
+- paula
+
+The password for all these LDAP users is **`Passw0rd`**.
 
 ### Containerized execution
 
