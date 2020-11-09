@@ -2,7 +2,7 @@
 
 source lib/functions.sh
 
-LOGDIR="${LOGDIR:-$(PWD)/_logs}"
+export LOGDIR="${LOGDIR:-$(PWD)/_logs}"
 mkdir -p "$LOGDIR"
 export LOGFILE="$LOGDIR/install.log"
 
@@ -91,7 +91,7 @@ echo -n "Are you sure to proceed installation with these settings [Y/N]: "
 read answer
 if [ "$answer" != "Y" ]; then
     echo "Abort!"
-    exit 0
+    exit 99
 fi
 
 echo "Great! Let's proceed the installation... "
