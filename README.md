@@ -65,7 +65,7 @@ $ cat > _customization.sh <<EOF
 # IBM Entitled Registry Credential
 #
 export ENTITLED_REGISTRY_USER="cp"
-export ENTITLED_REGISTRY_KEY="Your long entitlement key here"
+export ENTITLED_REGISTRY_KEY="<YOUR LONG ENTITLEMENT KEY GOES HERE>"
 
 #
 # Cloud Pak Modules to enable or disable:
@@ -79,7 +79,7 @@ export CP4MCM_MONITORING_ENABLED="true"
 #
 # (Optional) If RHACM is enabled, Red Hat Pull Secret must be set
 #
-export RED_HAT_PULL_SECRET_PATH="Your Red Hat pull secret file path"
+export RED_HAT_PULL_SECRET_PATH="YOUR RED HAT PULL SECRET FILE PATH GOES HERE"
 
 #
 # Storage Classes
@@ -105,7 +105,7 @@ EOF
 # Source the customization we've compiled
 $ source _customization.sh
 
-# Then kick it off
+# Make sure we've logged into OCP, then kick it off
 $ make
 ```
 
