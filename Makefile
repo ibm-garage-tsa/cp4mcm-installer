@@ -1,10 +1,5 @@
 .PHONY: all
-all: end_to_end
-
-.PHONY: end_to_end
-end_to_end:
-	./cp4m/cp4mcm-install.sh
-	./cp4m/cp4mcm-post-install.sh
+all: install post
 
 .PHONY: install
 install:
