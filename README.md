@@ -9,7 +9,7 @@
 
 ## Overview:
 
-This project is designed to provide an automated way to install the Cloud Pak for Multi Cloud Management v 2.1.
+This project is designed to provide an automated way to install the Cloud Pak for Multicloud Management (CP4MCM) v2.1.
 
 ### Scope:
 
@@ -17,10 +17,9 @@ Single replica (Non-HA) Configuration
 
 This automation currently provides the following installation functionality:
 
-- MCM Core\RHACM
-- MCM Monitoring Module
-- MCM Infrastructure Management Module
-- CloudForms ([with sample LDAP](./ldap_schema.md))
+- MCM Core / RHACM
+- Monitoring Module
+- Infrastructure Management Module (formerly CloudForms), [with sample LDAP](./ldap_schema.md))
 
 In development:
 
@@ -28,13 +27,14 @@ In development:
 
 ## Usage:
 
-There are two ways this automation can be used.
+There are two ways this automation can be used:
 1. You can clone this repo and execute the commands locally
 2. You can execute the installation from the Docker image that has been built (Beta)
 
 ### Executing locally
 
 **Pre-reqs**
+
 - `oc` command
 - You must be authenticated to your OpenShift cluster
 - `make` command
@@ -42,47 +42,107 @@ There are two ways this automation can be used.
 - If installing RHACM and planning to import non-OpenShift clusters, [Red Hat Pull Secret](https://cloud.redhat.com/openshift/install/pull-secret)
 
 **Process**
-1. Clone repo locally:
-```
-git clone git@github.com:ibm-garage-tsa/cp4mcm-installer.git
-```
 
-2. Export your entitled registy key:
-```
-export ENTITLED_REGISTRY_KEY="Your long key here"
+#### 1. Clone repo locally:
+
+```sh
+$ git clone https://github.com/ibm-garage-tsa/cp4mcm-installer.git
+$ cd cp4mcm-installer
 ```
 
-_(Optional)_ If you are installing RHACM and will import other clusters, export the path to your Red Hat Pull Secret:
+#### 2. Export configurable variables:
 
+There are quite some configurable variables to further customize the installation.
+
+Please check out [setup_env.sh](./setup_env.sh) for details.
+
+> Note: It's recommended to compile a local bash file so that we can export all customized variables without the need to change any existing files -- a file starting with `_` will be ignored by this repository so it's safe to keep it local and private only.
+
+```sh
+$ cat > _customization.sh <<EOF
+
+#
+# IBM Entitled Registry Credential
+#
+export ENTITLED_REGISTRY_USER="cp"
+export ENTITLED_REGISTRY_KEY="<YOUR LONG ENTITLEMENT KEY GOES HERE>"
+
+#
+# Cloud Pak Modules to enable or disable:
+# - true: to enable
+# - false: to disable
+#
+export CP4MCM_RHACM_ENABLED="true"
+export CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED="true"
+export CP4MCM_MONITORING_ENABLED="true"
+
+#
+# (Optional) If RHACM is enabled, Red Hat Pull Secret must be set
+#
+export RED_HAT_PULL_SECRET_PATH="YOUR RED HAT PULL SECRET FILE PATH GOES HERE"
+
+#
+# Storage Classes
+#
+# Important notes:
+# - If you are using ROKS you can just accept the defaults by setting it "" and it will use:
+#   - ibmc-block-gold
+#   - ibmc-file-gold
+# - If you are using OpenShift Container Storage you can accept the defaults by setting it "" and it will use
+#   - ocs-storagecluster-ceph-rbd
+#   - ocs-storagecluster-cephfs
+# - If you are using some other storage solution or you want to use storage other than the defaults, specify them here
+#
+export CP4MCM_BLOCK_STORAGECLASS=""
+export CP4MCM_FILE_STORAGECLASS=""
+
+EOF
 ```
-export RED_HAT_PULL_SECRET_PATH="/opt/downloads/pull-secret.txt"
+
+#### 3. Make sure you are in the base project folder to execute commands
+
+```sh
+# Source the customization we've compiled
+$ source _customization.sh
+
+# Make sure we've logged into OCP, then kick it off
+$ make
 ```
 
-3. Set installation parameters in the `setup_env.sh` file:
+> Note: A `install.log` file will be generated to log the installation activities within the `_logs` folder under current folder, but you can change the folder by `export LOGDIR=<somewhere else>`.
 
-   **Storage Classes**
+#### 4. How to access?
 
-   Modify the following parameters to configure the required storage classes.
+The log file will generate the info for you to access the CP4MCM.
 
-   CP4MCM_BLOCK_STORAGECLASS=""    
-   CP4MCM_FILE_STORAGECLASS=""  
+But you can always retrieve the required info by running this:
 
-   * If you are using ROKS you can just accept the defaults and it will use ibmc-block-gold, ibmc-file-gold and ibmc-file-gold-gid
-   * If you are using OpenShift Container Storage you can accept the defaults and it will use ocs-storagecluster-ceph-rbd and ocs-storagecluster-cephfs
-   * If you are using some other storage solution or you want to use storage outside of the defaults you will need to customize the storage classes
+```sh
+# CP4MCM URL
+$ oc -n ibm-common-services get route cp-console --template '{{.spec.host}}'
+```
 
-   **CP4MCM Config**
+There are 2 major mechanisms to authenticate and access CP4MCM ans its components:
 
-   Modify the following values to enable\disable each of the components.
+**Type 1: Default admin account with `Default authentication` authentication type**
 
-   CP4MCM_RHACM_ENABLED="true"  
-   CP4MCM_MONITORING="true"  
-   CP4MCM_INFRASTRUCTUREMANAGEMENT="true"  
-   CP4MCM_CLOUDFORMS="true"  
+```sh
+# CP4MCM default admin user name
+oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_username}' | base64 -d
+# CP4MCM default admin user password
+oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d
+```
 
-4. Make sure you are in the base project folder and execute the install using the Makefile
+**Type 2: LDAP users with `Enterprise LDAP` authentication type**
 
-- If you want to install all of the components you can run `make all`
+By default, the users within `operations` group are imported as admins as well:
+- bob
+- laura
+- josie
+- tom
+- paula
+
+The password for all these LDAP users is **`Passw0rd`**.
 
 ### Containerized execution
 

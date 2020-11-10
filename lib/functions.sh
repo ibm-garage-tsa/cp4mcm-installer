@@ -76,22 +76,24 @@ function cscred {
     # Get the CP Route
     YOUR_CP4MCM_ROUTE=`oc -n ibm-common-services get route cp-console --template '{{.spec.host}}'`
 
-    # Get the CP Password
+    # Get the CP user/password
+    CP_USER=`oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_username}' | base64 -d`
     CP_PASSWORD=`oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d`
 
     log "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     log "Installation complete."
     log "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     log " You can access your cluster with the URL and credentials below:"
-    log " URL=$YOUR_CP4MCM_ROUTE"
-    log " User=admin"
-    log " Password=$CP_PASSWORD"
+    log " - URL: $YOUR_CP4MCM_ROUTE"
+    log " - Admin User: $CP_USER"
+    log " - Admin Password: $CP_PASSWORD"
 }
 
 function rhacm_route {
     RHACM_ROUTE=`oc get route -n $RHACM_NAMESPACE multicloud-console --template '{{.spec.host}}'`
     log "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    log "RHACM installed. You can access it at https://$RHACM_ROUTE"
+    log "RHACM installed. You can access it at:"
+    log "- URL: https://$RHACM_ROUTE"
     log "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 }
 

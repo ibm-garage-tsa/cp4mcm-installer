@@ -2,8 +2,10 @@
 
 source lib/functions.sh
 
-LOGFILE="install.log"
-TMPDIR="./tmp"
+export LOGDIR="${LOGDIR:-$(PWD)/_logs}"
+mkdir -p "$LOGDIR"
+export LOGFILE="$LOGDIR/install.log"
+
 ##################################################################
 # GLOBAL
 # You shouldn't need to modify these if you don't want to.
@@ -11,38 +13,40 @@ TMPDIR="./tmp"
 #    
 # ex. export ENTITLED_REGISTRY_KEY="YOUR ENTITLEMENT KEY"
 ##################################################################
-if [ -z "${ENTITLED_REGISTRY_KEY}" ]; then echo "You must export the ENTITLED_REGISTRY_KEY environment variable prior to running."; exit 999; fi
+if [ -z "${ENTITLED_REGISTRY_KEY}" ]; then 
+  echo "You must export the ENTITLED_REGISTRY_KEY environment variable prior to running."; exit 999;
+fi
 
-ENTITLED_REGISTRY="cp.icr.io"
-ENTITLED_REGISTRY_SECRET="ibm-management-pull-secret"
-DOCKER_EMAIL="myemail@ibm.com"
+export ENTITLED_REGISTRY="cp.icr.io"
+export ENTITLED_REGISTRY_USER="${ENTITLED_REGISTRY_USER:-cp}"       # this may be cp or ekey
+export ENTITLED_REGISTRY_SECRET="ibm-management-pull-secret"
+export DOCKER_EMAIL="myemail@ibm.com"
 
 #
 # Define you storage classes here. If you are running on ROKS or using OCS it should be 
 # able to figure it out, but if you want something custom you can specify that here.
 #
-CP4MCM_BLOCK_STORAGECLASS=""
-CP4MCM_FILE_STORAGECLASS=""
+export CP4MCM_BLOCK_STORAGECLASS="${CP4MCM_BLOCK_STORAGECLASS:-}"
+export CP4MCM_FILE_STORAGECLASS="${CP4MCM_FILE_STORAGECLASS:-}"
 
 #
 # Cloud Pak Modules to enable
 #
-CP4MCM_RHACM_ENABLED="true"
-CP4MCM_MONITORING="true"
-CP4MCM_INFRASTRUCTUREMANAGEMENT="true"
-CP4MCM_CLOUDFORMS="true"
+export CP4MCM_RHACM_ENABLED="${CP4MCM_RHACM_ENABLED:-true}"
+export CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED="${CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED:-true}"
+export CP4MCM_MONITORING_ENABLED="${CP4MCM_MONITORING_ENABLED:-true}"
 
 #
 # Cloud Pak namespace
 #
-CP4MCM_NAMESPACE="cp4m"
+export CP4MCM_NAMESPACE="${CP4MCM_NAMESPACE:-ibm-cp4mcm}"
 
 #
 # RHACM Parameters
 #
-RHACM_NAMESPACE="rhacm"
-RHACM_SECRET_NAME="rhacm-pull-secret"
-RHACM_OPERATOR_GROUP_NAME="rhacm-operator-group"
+export RHACM_NAMESPACE="${RHACM_NAMESPACE:-open-cluster-management}"
+export RHACM_SECRET_NAME="rhacm-pull-secret"
+export RHACM_OPERATOR_GROUP_NAME="rhacm-operator-group"
 
 #
 # Attempt to detect the storage classes if they are not explicitly defined.
@@ -71,16 +75,23 @@ fi
 #
 entitled_registry_test
 
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo "Installation is starting with the following configuration:"
-echo " ROKS               = $ROKS"
-echo " RHACM Core         = $CP4MCM_RHACM_ENABLED"
-echo " Monitoring Module  = $CP4MCM_MONITORING"
-echo " Infra Management   = $CP4MCM_INFRASTRUCTUREMANAGEMENT"
-echo " CloudForms         = $CP4MCM_CLOUDFORMS"
-echo " Namespace          = $CP4MCM_NAMESPACE"
-echo " Block Storage      = $CP4MCM_BLOCK_STORAGECLASS"
-echo " File Storage class = $CP4MCM_FILE_STORAGECLASS"
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+# Confirmation
+log  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+log  "Installation is starting with the following configuration:"
+log  " ROKS                               = $ROKS"
+log  " CP4MCM Namespace                   = $CP4MCM_NAMESPACE"
+log  " Block Storage Class                = $CP4MCM_BLOCK_STORAGECLASS"
+log  " File Storage Class                 = $CP4MCM_FILE_STORAGECLASS"
+log  "--------------------------------------"
+log  " Module - RHACM: Enabled            = $CP4MCM_RHACM_ENABLED"
+log  " Module - Infra Management: Enabled = $CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED"
+log  " Module - Monitoring: Enabled       = $CP4MCM_MONITORING_ENABLED"
+log  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo -n "Are you sure to proceed installation with these settings [Y/N]: "
+read answer
+if [ "$answer" != "Y" ]; then
+    echo "Abort!"
+    exit 99
+fi
 
-
+echo "Great! Let's proceed the installation... "

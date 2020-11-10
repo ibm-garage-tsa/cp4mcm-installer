@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source setup_env.sh
+source lib/functions.sh
 
 #
 # cloudctl login
@@ -77,4 +77,9 @@ execlog cloudctl iam team-create operations
 execlog cloudctl iam group-import --group operations -f
 execlog cloudctl iam team-add-groups operations Administrator -g operations
 
-
+#
+# List out what users in "operations" group that we've imported
+# 
+log "Listing out the users/groups that have been imported."
+POD=$(oc -n ldap get pod -l app=ldap -o jsonpath="{.items[0].metadata.name}")
+execlog oc -n ldap exec $POD -- ldapsearch -LLL -x -H ldap:// -D "cn=admin,dc=ibm,dc=com" -w Passw0rd -b "dc=ibm,dc=com" "(memberOf=cn=operations,ou=groups,dc=ibm,dc=com)" dn

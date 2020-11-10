@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source setup_env.sh
+source lib/functions.sh
 
 YOUR_CLIENT_ID=`echo There is a huge white elephant in LA zoo | base64`
 YOUR_CLIENT_SECRET=`echo 12345678901234567890123456789012345 | base64`
@@ -199,5 +199,10 @@ status
 log "Applying navigation UI updates."
 ./cp4m/automation-navigation-updates.sh -p
 
-
-
+#
+# Clean Up
+#
+log "Cleaning up..."
+execlog mv -f registration.json "$LOGDIR"
+execlog mv -f navconfigurations.original "$LOGDIR"
+execlog mv -f navconfigurations.yaml "$LOGDIR"

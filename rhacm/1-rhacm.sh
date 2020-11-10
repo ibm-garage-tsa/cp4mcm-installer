@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source lib/functions.sh
+
 if [ -z "${RED_HAT_PULL_SECRET_PATH}" ]; then 
 echo -e "\e[33m" "If you are planning to impornt Kubernetes cluster that are not OpenShift you must export the RED_HAT_PULL_SECRET_PATH environment variable. Installing RHACM without pull secret...\e[0m"
 fi
