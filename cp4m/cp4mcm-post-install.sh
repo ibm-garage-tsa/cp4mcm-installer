@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source lib/functions.sh
+source setup_env.sh
 
 #YOUR_CP4MCM_ROUTE=`oc -n ibm-common-services get route cp-console --template '{{.spec.host}}'`
 #CP_PASSWORD=`oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d`

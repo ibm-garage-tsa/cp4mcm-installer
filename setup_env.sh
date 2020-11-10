@@ -75,23 +75,3 @@ fi
 #
 entitled_registry_test
 
-# Confirmation
-log  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-log  "Installation is starting with the following configuration:"
-log  " ROKS                               = $ROKS"
-log  " CP4MCM Namespace                   = $CP4MCM_NAMESPACE"
-log  " Block Storage Class                = $CP4MCM_BLOCK_STORAGECLASS"
-log  " File Storage Class                 = $CP4MCM_FILE_STORAGECLASS"
-log  "--------------------------------------"
-log  " Module - RHACM: Enabled            = $CP4MCM_RHACM_ENABLED"
-log  " Module - Infra Management: Enabled = $CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED"
-log  " Module - Monitoring: Enabled       = $CP4MCM_MONITORING_ENABLED"
-log  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo -n "Are you sure to proceed installation with these settings [Y/N]: "
-read answer
-if [ "$answer" != "Y" ]; then
-    echo "Abort!"
-    exit 99
-fi
-
-echo "Great! Let's proceed the installation... "
