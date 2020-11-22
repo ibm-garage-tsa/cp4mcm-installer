@@ -382,8 +382,10 @@ status
 #
 # Print out the route for RHACM access
 #
-rhacm_route
-
+if [[ "$CP4MCM_RHACM_ENABLED" == "true" ]]; 
+then
+  rhacm_route
+fi
 #
 # Keep waiting and checking the installation progress
 #

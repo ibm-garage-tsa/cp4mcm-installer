@@ -3,6 +3,9 @@
 **Note:** This project is provided **AS-IS**. Support will be provided as possible via git issues.
 
 **Updates:**  
+11/22/2020
+- As it turns out that RedHat Advanced Cluster Management is not supported on IBM Cloud RedHat Openshift clusters (ROKS) as a management hub, the default install method is change to use Core MCM instead of RHACM. In you plan to install on a supported cluster and want to use RHACM, export the variable CP4MCM_RHACM_ENABLED="true" (e.g. uncomment the relevant line in a _customizations.sh script shown below)
+
 11/4/2020
 - Added support for RedHat Advanced Cluster Management  
 - Refactored installation process
@@ -72,7 +75,7 @@ export ENTITLED_REGISTRY_KEY="<YOUR LONG ENTITLEMENT KEY GOES HERE>"
 # - true: to enable
 # - false: to disable
 #
-export CP4MCM_RHACM_ENABLED="true"
+#export CP4MCM_RHACM_ENABLED="true"
 export CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED="true"
 export CP4MCM_MONITORING_ENABLED="true"
 
@@ -143,6 +146,18 @@ By default, the users within `operations` group are imported as admins as well:
 - paula
 
 The password for all these LDAP users is **`Passw0rd`**.
+
+### Troubleshooting
+
+If your installation hang with the following error:
+
+```sh
+Waiting for pods to start.. retry (28 of 60)(Pods remaining =        1)(Consecutive tries 0/3)
+
+ibm-common-services                                ibm-monitoring-grafana-6958ff5fb7-szjqw                           0/3     Init:0/1           0          25m
+```
+
+it may be related to the timing issue during installation. To progress the installation you can go to the Openshift console -> Installed Operators and uninstall IBM Monitoring Prometheus Extension Operator. It will get recreated.
 
 ### Containerized execution
 
