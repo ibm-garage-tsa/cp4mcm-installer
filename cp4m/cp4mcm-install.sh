@@ -58,7 +58,7 @@ spec:
   displayName: IBMCS Operators
   publisher: IBM
   sourceType: grpc
-  image: docker.io/ibmcom/ibm-common-service-catalog:latest
+  image: docker.io/ibmcom/ibm-common-service-catalog:3.5.6
   updateStrategy:
     registryPoll:
       interval: 45m
@@ -75,18 +75,16 @@ oc create -f - <<EOF
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
-  name: management-installer-index
+  name: ibm-management-orchestrator
   namespace: openshift-marketplace
 spec:
-  displayName: CP4MCM Installer Catalog
-  publisher: IBM CP4MCM
+  displayName: IBM Management Orchestrator Catalog
+  publisher: IBM
   sourceType: grpc
-  image: quay.io/cp4mcm/cp4mcm-orchestrator-catalog:2.1-latest
+  image: quay.io/cp4mcm/cp4mcm-orchestrator-catalog:2.2-latest
   updateStrategy:
     registryPoll:
       interval: 45m
-  secrets:
-   - $ENTITLED_REGISTRY_SECRET
 EOF
 
 #
@@ -110,12 +108,12 @@ metadata:
   name: ibm-management-orchestrator
   namespace: openshift-operators
 spec:
-  channel: 2.1-stable
+  channel: 2.2-stable
   installPlanApproval: Automatic
   name: ibm-management-orchestrator
-  source: management-installer-index
+  source: ibm-management-orchestrator
   sourceNamespace: openshift-marketplace
-  startingCSV: ibm-management-orchestrator.v2.1.5
+  startingCSV: ibm-management-orchestrator.v2.2.5
 EOF
 
 #
@@ -127,7 +125,7 @@ progress-bar 180
 #
 # Create the Installation
 #
-log "Applying the CP4MCM 2.1 - Core Installation"
+log "Applying the CP4MCM 2.2 - Core Installation"
 cat << EOF | oc apply -f -
 apiVersion: orchestrator.management.ibm.com/v1alpha1
 kind: Installation
