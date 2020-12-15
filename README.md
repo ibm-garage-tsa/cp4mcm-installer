@@ -1,8 +1,11 @@
-# Installation assets for CP4MCM 2.1
+# Installation assets for CP4MCM 2.2
 
 **Note:** This project is provided **AS-IS**. Support will be provided as possible via git issues.
 
 **Updates:**  
+12/11/2020
+- Updated the installer to work with the latest CP4MCM 2.2 release. 
+
 11/22/2020
 - As it turns out that RedHat Advanced Cluster Management is not supported on IBM Cloud RedHat Openshift clusters (ROKS) as a management hub, the default install method is change to use Core MCM instead of RHACM. In you plan to install on a supported cluster and want to use RHACM, export the variable CP4MCM_RHACM_ENABLED="true" (e.g. uncomment the relevant line in a _customizations.sh script shown below)
 
