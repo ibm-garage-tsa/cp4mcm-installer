@@ -76,6 +76,7 @@ execlog cloudctl iam ldap-create my_ldap --basedn 'dc=ibm,dc=com' --binddn 'cn=a
 execlog cloudctl iam team-create operations
 execlog cloudctl iam group-import --group operations -f
 execlog cloudctl iam team-add-groups operations Administrator -g operations
+execlog cloudctl iam resource-add operations -r "crn:v1:icp:private:k8:mycluster:n/default:::"
 
 #
 # List out what users in "operations" group that we've imported

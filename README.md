@@ -1,8 +1,12 @@
-# Installation assets for CP4MCM 2.2
+# Installation assets for CP4MCM v2.x
 
-**Note:** This project is provided **AS-IS**. Support will be provided as possible via git issues.
+**Note:** This project is NOT an IBM official project and is provided **AS-IS**. Support will be provided as possible via git issues.
 
-**Updates:**  
+**Updates:** 
+
+04/09/2021
+- Updated the installer to make CP4MCM version configurable: **2.1** or **2.2**, it's your choice.
+
 12/11/2020
 - Updated the installer to work with the latest CP4MCM 2.2 release. 
 
@@ -15,7 +19,7 @@
 
 ## Overview:
 
-This project is designed to provide an automated way to install the Cloud Pak for Multicloud Management (CP4MCM) v2.1.
+This project is designed to provide an automated way to install the Cloud Pak for Multicloud Management (CP4MCM) v2.x.
 
 ### Scope:
 
@@ -72,6 +76,15 @@ $ cat > _customization.sh <<EOF
 #
 export ENTITLED_REGISTRY_USER="cp"
 export ENTITLED_REGISTRY_KEY="<YOUR LONG ENTITLEMENT KEY GOES HERE>"
+
+#
+# Cloud Pak Version, defaults to 2.2 if not set
+#
+# There are some implications while picking the version. For example:
+# - In CP4MCM v2.1.x: the RHACM, once enabled, will be v2.0
+# - In CP4MCM v2.2.x: the RHACM, once enabled, will be v2.1
+#
+export CP4MCM_VERSION="2.2"
 
 #
 # Cloud Pak Modules to enable or disable:
