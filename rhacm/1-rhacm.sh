@@ -42,7 +42,7 @@ metadata:
 spec:
   sourceNamespace: openshift-marketplace
   source: redhat-operators
-  channel: release-2.1
+  channel: release-${RHACM_VERSION}
   installPlanApproval: Automatic
   name: advanced-cluster-management
 EOF
@@ -56,7 +56,7 @@ progress-bar 180
 #
 # Create the Installation
 #
-log "Applying the RHACM 2.1 - Multiclusterhub Installation"
+log "Applying the RHACM ${RHACM_VERSION} - Multiclusterhub Installation"
 
 if [ "${RED_HAT_PULL_SECRET_PATH}" ]; then 
 

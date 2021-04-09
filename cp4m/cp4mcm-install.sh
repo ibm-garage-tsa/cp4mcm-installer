@@ -6,6 +6,7 @@ source setup_env.sh
 log  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 log  "Installation is starting with the following configuration:"
 log  " ROKS                               = $ROKS"
+log  " CP4MCM Version                     = $CP4MCM_VERSION"
 log  " CP4MCM Namespace                   = $CP4MCM_NAMESPACE"
 log  " Block Storage Class                = $CP4MCM_BLOCK_STORAGECLASS"
 log  " File Storage Class                 = $CP4MCM_FILE_STORAGECLASS"
@@ -58,7 +59,7 @@ spec:
   displayName: IBMCS Operators
   publisher: IBM
   sourceType: grpc
-  image: docker.io/ibmcom/ibm-common-service-catalog:3.5.6
+  image: docker.io/ibmcom/ibm-common-service-catalog:${CS_VERSION}
   updateStrategy:
     registryPoll:
       interval: 45m
@@ -81,7 +82,7 @@ spec:
   displayName: IBM Management Orchestrator Catalog
   publisher: IBM
   sourceType: grpc
-  image: quay.io/cp4mcm/cp4mcm-orchestrator-catalog:2.2-latest
+  image: quay.io/cp4mcm/cp4mcm-orchestrator-catalog:${CP4MCM_VERSION}-latest
   updateStrategy:
     registryPoll:
       interval: 45m
@@ -108,12 +109,12 @@ metadata:
   name: ibm-management-orchestrator
   namespace: openshift-operators
 spec:
-  channel: 2.2-stable
+  channel: ${CP4MCM_SUBSCRIPTION_CHANNEL}
   installPlanApproval: Automatic
   name: ibm-management-orchestrator
   source: ibm-management-orchestrator
   sourceNamespace: openshift-marketplace
-  startingCSV: ibm-management-orchestrator.v2.2.5
+  startingCSV: ibm-management-orchestrator.v${CP4MCM_SUBSCRIPTION_CSV}
 EOF
 
 #
@@ -125,7 +126,7 @@ progress-bar 180
 #
 # Create the Installation
 #
-log "Applying the CP4MCM 2.2 - Core Installation"
+log "Applying the CP4MCM ${CP4MCM_VERSION} - Core Installation"
 cat << EOF | oc apply -f -
 apiVersion: orchestrator.management.ibm.com/v1alpha1
 kind: Installation
