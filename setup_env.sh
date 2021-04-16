@@ -25,8 +25,13 @@ export DOCKER_EMAIL="myemail@ibm.com"
 #
 # CP4MCM versioning with relevant components
 #
-export CP4MCM_VERSION="${CP4MCM_VERSION:-2.2}"
-if [[ "${CP4MCM_VERSION}" == "2.2" ]]; then 
+export CP4MCM_VERSION="${CP4MCM_VERSION:-2.3}"
+if [[ "${CP4MCM_VERSION}" == "2.3" ]]; then 
+  export CS_VERSION="3.6"
+  export CP4MCM_SUBSCRIPTION_CHANNEL="2.3-stable"
+  export CP4MCM_SUBSCRIPTION_CSV="2.3.0"
+  export RHACM_VERSION="2.2"
+elif [[ "${CP4MCM_VERSION}" == "2.2" ]]; then 
   export CS_VERSION="3.5.6"
   export CP4MCM_SUBSCRIPTION_CHANNEL="2.2-stable"
   export CP4MCM_SUBSCRIPTION_CSV="2.2.5"

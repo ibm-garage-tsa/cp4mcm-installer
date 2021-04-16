@@ -4,6 +4,9 @@
 
 **Updates:** 
 
+4/15/2020
+- Updated the installer to work with the latest CP4MCM 2.3 release. 
+
 04/09/2021
 - Updated the installer to make CP4MCM version configurable: **2.1** or **2.2**, it's your choice.
 
@@ -78,13 +81,14 @@ export ENTITLED_REGISTRY_USER="cp"
 export ENTITLED_REGISTRY_KEY="<YOUR LONG ENTITLEMENT KEY GOES HERE>"
 
 #
-# Cloud Pak Version, defaults to 2.2 if not set
+# Cloud Pak Version, defaults to 2.3 if not set
 #
 # There are some implications while picking the version. For example:
 # - In CP4MCM v2.1.x: the RHACM, once enabled, will be v2.0
 # - In CP4MCM v2.2.x: the RHACM, once enabled, will be v2.1
+# - In CP4MCM v2.3.x: the RHACM, once enabled, will be v2.2
 #
-export CP4MCM_VERSION="2.2"
+export CP4MCM_VERSION="2.3"
 
 #
 # Cloud Pak Modules to enable or disable:
