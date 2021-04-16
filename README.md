@@ -95,9 +95,11 @@ export CP4MCM_VERSION="2.3"
 # - true: to enable
 # - false: to disable
 #
-#export CP4MCM_RHACM_ENABLED="true"
+export CP4MCM_RHACM_ENABLED="true"
 export CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED="true"
-export CP4MCM_MONITORING_ENABLED="true"
+# Monitoring is now disabled by default since in 2.2 and 2.3 it requires RHACM Obseravability to be deployed first. 
+# This part was not automated as it requires Object storage. (Minio ?)
+export CP4MCM_MONITORING_ENABLED="false"
 
 #
 # (Optional) If RHACM is enabled, Red Hat Pull Secret must be set
