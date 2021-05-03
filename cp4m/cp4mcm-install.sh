@@ -5,15 +5,16 @@ source setup_env.sh
 # Confirmation
 log  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 log  "Installation is starting with the following configuration:"
-log  " ROKS                               = $ROKS"
-log  " CP4MCM Version                     = $CP4MCM_VERSION"
-log  " CP4MCM Namespace                   = $CP4MCM_NAMESPACE"
-log  " Block Storage Class                = $CP4MCM_BLOCK_STORAGECLASS"
-log  " File Storage Class                 = $CP4MCM_FILE_STORAGECLASS"
-log  "--------------------------------------"
-log  " Module - RHACM: Enabled            = $CP4MCM_RHACM_ENABLED"
-log  " Module - Infra Management: Enabled = $CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED"
-log  " Module - Monitoring: Enabled       = $CP4MCM_MONITORING_ENABLED"
+log  " ROKS                                   = $ROKS"
+log  " CP4MCM Version                         = $CP4MCM_VERSION"
+log  " CP4MCM Namespace                       = $CP4MCM_NAMESPACE"
+log  " Block Storage Class                    = $CP4MCM_BLOCK_STORAGECLASS"
+log  " File Storage Class                     = $CP4MCM_FILE_STORAGECLASS"
+log  "----------------------------------------------------------------------"
+log  " Module - RHACM: Enabled                = $CP4MCM_RHACM_ENABLED"
+log  " Module - RHACM Observability: Enabled  = $CP4MCM_RHACM_OBSERVABILITY_ENABLED"
+log  " Module - Infra Management: Enabled     = $CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED"
+log  " Module - Monitoring: Enabled           = $CP4MCM_MONITORING_ENABLED"
 log  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo -n "Are you sure to proceed installation with these settings [Y/N]: "
 read answer
@@ -27,10 +28,18 @@ echo "Great! Let's proceed the installation... "
 #
 # RHACM Installation
 #
-if [[ "$CP4MCM_RHACM_ENABLED" == "true" ]];
-then
-  source rhacm/1-rhacm.sh
-fi
+# if [[ "$CP4MCM_RHACM_ENABLED" == "true" ]];
+# then
+#   # install RHACM core components
+#   source rhacm/1-rhacm.sh
+
+#   # install MinIO and enable RHACM Observability if CP4MCM_RHACM_OBSERVABILITY_ENABLED is true
+#   if [ "${CP4MCM_RHACM_OBSERVABILITY_ENABLED}" == "true" ]; then
+#   source rhacm/2-minio.sh
+#   source rhacm/3-rhacm-observability.sh
+#   fi
+  
+# fi
 
 #
 # Create Operator Namespace
@@ -40,16 +49,18 @@ oc new-project $CP4MCM_NAMESPACE
 #
 # Create entitled registry secret
 #
-oc create secret docker-registry $ENTITLED_REGISTRY_SECRET --docker-username=cp --docker-password=$ENTITLED_REGISTRY_KEY --docker-email=$DOCKER_EMAIL --docker-server=$ENTITLED_REGISTRY -n $CP4MCM_NAMESPACE
+oc create secret docker-registry $ENTITLED_REGISTRY_SECRET \
+  --docker-username=$ENTITLED_REGISTRY_USER \
+  --docker-password=$ENTITLED_REGISTRY_KEY \
+  --docker-email=$DOCKER_EMAIL \
+  --docker-server=$ENTITLED_REGISTRY \
+  -n $CP4MCM_NAMESPACE
 
 #
-# Create Catalog Sources
+# Creating Common Services CatalogSource
 #
-
-#
-# Common Services CatalogSource
-#
-oc create -f - <<EOF
+log "Creating Common Services CatalogSource"
+oc apply -f - <<EOF
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
@@ -59,20 +70,64 @@ spec:
   displayName: IBMCS Operators
   publisher: IBM
   sourceType: grpc
-  image: docker.io/ibmcom/ibm-common-service-catalog:${CS_VERSION}
+  image: ${CS_CATALOGSOURCE_IMAGE}
   updateStrategy:
     registryPoll:
       interval: 45m
 EOF
 
-#
-# Wait for CatalogSource to be created
-#
-log "Waiting for Common Services CatalogSource (180 seconds)"
+log "Waiting for Common Services CatalogSource to be ready (180 seconds)"
 progress-bar 180
 
-# CP4MCM CatalogSource
-oc create -f - <<EOF
+#
+# Creating Common Services Subscription
+#
+log "Creating Common Services Subscription"
+oc apply -f - <<EOF
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-common-service-operator
+  namespace: openshift-operators
+spec:
+  channel: ${CS_SUBSCRIPTION_CHANNEL}
+  installPlanApproval: Automatic
+  name: ibm-common-service-operator
+  source: opencloud-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ibm-common-service-operator.v${CS_VERSION}
+EOF
+
+log "Waiting for Common Services subscription to be ready (180 seconds)"
+progress-bar 180
+
+
+#
+# Creating Common Services CR
+# 
+# To further customize Common Services, check this out:
+# https://www.ibm.com/docs/en/cloud-paks/cp-management/2.3.x?topic=configuration-configuring-common-services
+#
+log "Creating Common Services CR"
+oc apply -f - <<EOF
+apiVersion: operator.ibm.com/v3
+kind: CommonService
+metadata:
+  name: common-service
+  namespace: ibm-common-services
+spec:
+  size: medium
+EOF
+
+log "Waiting for Common Services' CR to be ready (180 seconds)"
+progress-bar 180
+
+
+#
+# Creating CP4MCM CatalogSource
+#
+log "Creating CP4MCM CatalogSource"
+oc apply -f - <<EOF
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
@@ -82,27 +137,23 @@ spec:
   displayName: IBM Management Orchestrator Catalog
   publisher: IBM
   sourceType: grpc
-  image: quay.io/cp4mcm/cp4mcm-orchestrator-catalog:${CP4MCM_VERSION}-latest
+  image: ${CP4MCM_CATALOGSOURCE_IMAGE}
   updateStrategy:
     registryPoll:
       interval: 45m
 EOF
 
 #
-# Wait for CP4MCM CatalogSource to be created
+# Waiting for CP4MCM CatalogSource to be ready
 #
-log "Waiting for CP4MCM CatalogSource (180 seconds)"
+log "Waiting for CP4MCM CatalogSource to be ready (180 seconds)"
 progress-bar 180
 
 #
-# Create CP4MCM Subscription
+# Creating CP4MCM Subscription
 #
-# Add manual approval after the fact.
-#
-#
-# Create CP4MCM Subscription
-#
-cat << EOF | oc apply -f -
+log "Creating CP4MCM Subscription"
+oc apply -f - <<EOF
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
@@ -120,14 +171,14 @@ EOF
 #
 # Wait for CP4MCM Subscription to be created
 #
-log "Waiting for CP4MCM Subscription (180 seconds)"
+log "Waiting for CP4MCM Subscription to be ready (180 seconds)"
 progress-bar 180
 
 #
-# Create the Installation
+# Applying the CP4MCM Installation
 #
 log "Applying the CP4MCM ${CP4MCM_VERSION} - Core Installation"
-cat << EOF | oc apply -f -
+oc apply -f - <<EOF
 apiVersion: orchestrator.management.ibm.com/v1alpha1
 kind: Installation
 metadata:
@@ -235,12 +286,15 @@ spec:
       name: techPreview
 EOF
 
-#
-# Enable the Monitoring Module adding Monitoring Storage Config
-#
+
 if [[ "$CP4MCM_MONITORING_ENABLED" == "true" ]];
 then
-log "Adding Monitoring Storage Config to Installation"
+
+#
+# Enabling the Monitoring Module by patching the Installation
+#
+
+log "Enabling the Monitoring Module by patching the Installation for storage configuration"
 oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_NAMESPACE --type=json -p="[
  {"op": "test",
   "path": "/spec/pakModules/1/name",
@@ -282,7 +336,7 @@ oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_
 ]"
 
 #
-# Enable the Monitoring Module
+# And then enabling it
 #
 log "Enabling Monitoring Module"
 oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_NAMESPACE --type=json -p='[
@@ -296,18 +350,19 @@ oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_
 
 fi
 
-#
-# Enable the Infrastructure Management Module
-#
-#
-# Updating Installation config with CAM config.
-#
+
 if [[ "$CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED" == "true" ]];
 then
 
+#
+# Enabling the Infrastructure Management Module
+#
+
+log "Adding CAM Config to Installation (ROKS = $ROKS)";
+
 if [ $ROKS != "true" ]; 
 then 
-log "Adding CAM Config to Installation (ROKS = false)";
+
 oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_NAMESPACE --type=json -p="[
  {"op": "test",
   "path": "/spec/pakModules/0/name",
@@ -324,12 +379,12 @@ oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_
         }
   }
 ]";
+
 else
 
 #
 # Updating Installation config with CAM config with ROKS.
 #
-log "Adding CAM Config to Installation (ROKS = $ROKS)"
 oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_NAMESPACE --type=json -p="[
  {"op": "test",
   "path": "/spec/pakModules/0/name",
@@ -350,12 +405,13 @@ oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_
         }
   }
 ]"
+
 fi
 
 #
-# Enable Infrastructure Management Module
+# Enabling Infrastructure Management Module by patching the Installation
 #
-log "Enabling the IM Module in the  Installation"
+log "Enabling Infrastructure Management Module by patching the Installation"
 oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_NAMESPACE --type=json -p='[
  {"op": "test",
   "path": "/spec/pakModules/0/name",

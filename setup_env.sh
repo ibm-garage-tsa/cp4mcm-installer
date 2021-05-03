@@ -4,7 +4,7 @@ source lib/functions.sh
 
 export LOGDIR="${LOGDIR:-$(PWD)/_logs}"
 mkdir -p "$LOGDIR"
-export LOGFILE="$LOGDIR/install.log"
+export LOGFILE="$LOGDIR/install-$(date +"%Y-%m-%d").log"
 
 ##################################################################
 # GLOBAL
@@ -27,20 +27,29 @@ export DOCKER_EMAIL="myemail@ibm.com"
 #
 export CP4MCM_VERSION="${CP4MCM_VERSION:-2.3}"
 if [[ "${CP4MCM_VERSION}" == "2.3" ]]; then 
-  export CS_VERSION="3.6"
+  export CS_VERSION="3.6.4"
+  export CS_SUBSCRIPTION_CHANNEL="stable-v1"
   export CP4MCM_SUBSCRIPTION_CHANNEL="2.3-stable"
-  export CP4MCM_SUBSCRIPTION_CSV="2.3.0"
+  export CP4MCM_SUBSCRIPTION_CSV="2.3.2"
   export RHACM_VERSION="2.2"
+  export CS_CATALOGSOURCE_IMAGE="docker.io/ibmcom/ibm-common-service-catalog:${CS_VERSION}"
+  export CP4MCM_CATALOGSOURCE_IMAGE="quay.io/cp4mcm/cp4mcm-orchestrator-catalog:${CP4MCM_VERSION}-latest"
 elif [[ "${CP4MCM_VERSION}" == "2.2" ]]; then 
   export CS_VERSION="3.5.6"
+  export CS_SUBSCRIPTION_CHANNEL="stable-v1"
   export CP4MCM_SUBSCRIPTION_CHANNEL="2.2-stable"
   export CP4MCM_SUBSCRIPTION_CSV="2.2.5"
   export RHACM_VERSION="2.1"
+  export CS_CATALOGSOURCE_IMAGE="docker.io/ibmcom/ibm-common-service-catalog:${CS_VERSION}"
+  export CP4MCM_CATALOGSOURCE_IMAGE="quay.io/cp4mcm/cp4mcm-orchestrator-catalog:${CP4MCM_VERSION}-latest"
 elif  [[ "${CP4MCM_VERSION}" == "2.1" ]]; then 
   export CS_VERSION="3.5.6"
+  export CS_SUBSCRIPTION_CHANNEL="stable-v1"
   export CP4MCM_SUBSCRIPTION_CHANNEL="2.1-stable"
   export CP4MCM_SUBSCRIPTION_CSV="2.1.5"
   export RHACM_VERSION="2.0"
+  export CS_CATALOGSOURCE_IMAGE="docker.io/ibmcom/ibm-common-service-catalog:${CS_VERSION}"
+  export CP4MCM_CATALOGSOURCE_IMAGE="quay.io/cp4mcm/cp4mcm-orchestrator-catalog:${CP4MCM_VERSION}-latest"
 else
   echo "The CP4MCM version is not supported by this script: ${CP4MCM_VERSION}"; exit 999;
 fi
@@ -56,6 +65,7 @@ export CP4MCM_FILE_STORAGECLASS="${CP4MCM_FILE_STORAGECLASS:-}"
 # Cloud Pak Modules to enable
 #
 export CP4MCM_RHACM_ENABLED="${CP4MCM_RHACM_ENABLED:-false}"
+export CP4MCM_RHACM_OBSERVABILITY_ENABLED="${CP4MCM_RHACM_OBSERVABILITY_ENABLED:-false}"
 export CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED="${CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED:-true}"
 export CP4MCM_MONITORING_ENABLED="${CP4MCM_MONITORING_ENABLED:-true}"
 
@@ -65,11 +75,19 @@ export CP4MCM_MONITORING_ENABLED="${CP4MCM_MONITORING_ENABLED:-true}"
 export CP4MCM_NAMESPACE="${CP4MCM_NAMESPACE:-ibm-cp4mcm}"
 
 #
+# MinIO
+#
+export MINIO_NAMESPACE="${MINIO_NAMESPACE:-minio}"
+export MINIO_CHART_NAME="${MINIO_CHART_NAME:-minio}"
+
+#
 # RHACM Parameters
 #
 export RHACM_NAMESPACE="${RHACM_NAMESPACE:-open-cluster-management}"
 export RHACM_SECRET_NAME="rhacm-pull-secret"
 export RHACM_OPERATOR_GROUP_NAME="rhacm-operator-group"
+
+export RHACM_OBSERVABILITY_NAMESPACE="${RHACM_OBSERVABILITY_NAMESPACE:-open-cluster-management-observability}"
 
 #
 # Attempt to detect the storage classes if they are not explicitly defined.
