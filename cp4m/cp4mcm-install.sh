@@ -28,18 +28,18 @@ echo "Great! Let's proceed the installation... "
 #
 # RHACM Installation
 #
-# if [[ "$CP4MCM_RHACM_ENABLED" == "true" ]];
-# then
-#   # install RHACM core components
-#   source rhacm/1-rhacm.sh
+if [[ "$CP4MCM_RHACM_ENABLED" == "true" ]];
+then
+  # install RHACM core components
+  source rhacm/1-rhacm.sh
 
-#   # install MinIO and enable RHACM Observability if CP4MCM_RHACM_OBSERVABILITY_ENABLED is true
-#   if [ "${CP4MCM_RHACM_OBSERVABILITY_ENABLED}" == "true" ]; then
-#   source rhacm/2-minio.sh
-#   source rhacm/3-rhacm-observability.sh
-#   fi
+  # install MinIO and enable RHACM Observability if CP4MCM_RHACM_OBSERVABILITY_ENABLED is true
+  if [ "${CP4MCM_RHACM_OBSERVABILITY_ENABLED}" == "true" ]; then
+  source rhacm/2-minio.sh
+  source rhacm/3-rhacm-observability.sh
+  fi
   
-# fi
+fi
 
 #
 # Create Operator Namespace
@@ -76,9 +76,6 @@ spec:
       interval: 45m
 EOF
 
-log "Waiting for Common Services CatalogSource to be ready (180 seconds)"
-progress-bar 180
-
 #
 # Creating Common Services Subscription
 #
@@ -98,29 +95,25 @@ spec:
   startingCSV: ibm-common-service-operator.v${CS_VERSION}
 EOF
 
-log "Waiting for Common Services subscription to be ready (180 seconds)"
-progress-bar 180
-
-
 #
 # Creating Common Services CR
 # 
 # To further customize Common Services, check this out:
 # https://www.ibm.com/docs/en/cloud-paks/cp-management/2.3.x?topic=configuration-configuring-common-services
 #
-log "Creating Common Services CR"
-oc apply -f - <<EOF
-apiVersion: operator.ibm.com/v3
-kind: CommonService
-metadata:
-  name: common-service
-  namespace: ibm-common-services
-spec:
-  size: medium
-EOF
+# log "Creating Common Services CR"
+# oc apply -f - <<EOF
+# apiVersion: operator.ibm.com/v3
+# kind: CommonService
+# metadata:
+#   name: common-service
+#   namespace: ibm-common-services
+# spec:
+#   size: medium
+# EOF
 
-log "Waiting for Common Services' CR to be ready (180 seconds)"
-progress-bar 180
+# log "Waiting for Common Services' CR to be ready (180 seconds)"
+# progress-bar 180
 
 
 #
@@ -144,12 +137,6 @@ spec:
 EOF
 
 #
-# Waiting for CP4MCM CatalogSource to be ready
-#
-log "Waiting for CP4MCM CatalogSource to be ready (180 seconds)"
-progress-bar 180
-
-#
 # Creating CP4MCM Subscription
 #
 log "Creating CP4MCM Subscription"
@@ -169,9 +156,9 @@ spec:
 EOF
 
 #
-# Wait for CP4MCM Subscription to be created
+# Waiting for both Common Services and CP4MCM Subscription to be ready
 #
-log "Waiting for CP4MCM Subscription to be ready (180 seconds)"
+log "Waiting for both Common Services and CP4MCM Subscription to be ready (180 seconds)"
 progress-bar 180
 
 #
@@ -424,7 +411,7 @@ oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_
 fi
 
 #
-# Wait for CP4MCM Subscription to be created
+# Waiting for Installation to start
 #
 log "Waiting for Installation to start. (180 seconds)"
 progress-bar 180
