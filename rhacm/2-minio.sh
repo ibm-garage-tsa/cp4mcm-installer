@@ -23,7 +23,7 @@ oc new-project $MINIO_NAMESPACE
 # Creating SA and granting proper permissions
 #
 log "Creating SA and granting proper permissions"
-oc create sa $MINIO_CHART_NAME
+oc create sa $MINIO_CHART_NAME -n $MINIO_NAMESPACE
 oc adm policy add-scc-to-user anyuid system:serviceaccount:$MINIO_NAMESPACE:$MINIO_CHART_NAME
 
 #
@@ -32,6 +32,7 @@ oc adm policy add-scc-to-user anyuid system:serviceaccount:$MINIO_NAMESPACE:$MIN
 #
 log "Installing MinIO Helm Chart"
 helm install $MINIO_CHART_NAME stable/minio \
+  --namespace $MINIO_NAMESPACE \
   --set persistence.enabled=true \
   --set persistence.size=50Gi \
   --set persistence.storageClass=$CP4MCM_BLOCK_STORAGECLASS \
