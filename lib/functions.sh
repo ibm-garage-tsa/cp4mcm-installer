@@ -3,8 +3,7 @@
 ###################################################
 
 function log {
-    echo "$(date): $@"
-    echo "$(date): $@" >> $LOGFILE
+    echo "$(date +"%Y-%m-%d %H:%m:%S"): $@" | tee -a $LOGFILE
 }
 
 
