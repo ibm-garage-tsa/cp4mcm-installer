@@ -19,7 +19,7 @@ then
 fi
 
 #
-# Updating Installation config with CAM config.
+# IM post actions
 #
 if [[ "$CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED" == "true" ]];
 then
@@ -28,6 +28,12 @@ then
     #
     log "Integrating CP4MCM IAM with LDAP"
     ./cp4m/CloudFormsandOIDC.sh
+
+    #
+    # Patching CAM
+    #
+    log "Patching CP4MCM IM's CAM"
+    ./cp4m/patch-im-cam.sh
 fi
 
 
