@@ -55,11 +55,15 @@ if [ -x "$(command -v mc)" ]; then
   minio_accesskey=`oc -n $MINIO_NAMESPACE get secret minio -o json | jq -r .data.accesskey | base64 -d`
   minio_secretkey=`oc -n $MINIO_NAMESPACE get secret minio -o json | jq -r .data.secretkey | base64 -d`
   mc config host rm minio
-  mc config host add minio http://localhost:9000 $minio_accesskey $minio_secretkey --api "s3v4" --lookup "dns"
+  mc config host add minio http://localhost:9000 $minio_accesskey $minio_secretkey --api "s3v4"
 
-  mc ls minio
+  # copy a file
+  mc cp README.md minio/rhacm-bucket
+
+  # list the folder
+  mc ls -r minio
   # we should see somethihg like
-  #[2021-04-29 11:35:20 +08]      0B rhacm-bucket/
+  #[2021-05-05 10:44:42 +08]    133B rhacm-bucket/README.md
 
   # kill port-forward process
   kill -9 $port_forward_pid
