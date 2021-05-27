@@ -40,15 +40,7 @@ fi
 #
 # Monitoring Module Post Install Config
 #
-if [[ "$CP4MCM_MONITORING_ENABLED" == "true" ]];
+if [[ "$CP4MCM_MONITORING_ENABLED" == "true" && "$CP4MCM_VERSION" == "2.3" ]];
 then
-    log "Adding Monitoring Storage Config to Installation"
-
-    #
-    # Patching the CNMonitoring deployable secret.
-    #
-    log "Docker config for SECRET=$ENTITLED_REGISTRY_SECRET in NAMESPACE=$CP4MCM_NAMESPACE"
-    ENTITLED_REGISTRY_DOCKERCONFIG=`oc get secret $ENTITLED_REGISTRY_SECRET -n $CP4MCM_NAMESPACE -o jsonpath='{.data.\.dockerconfigjson}'`
-    log "ENTITLED_REGISTRY_DOCKERCONFIG=$ENTITLED_REGISTRY_DOCKERCONFIG"
-    execlog oc patch deployable.apps.open-cluster-management.io/cnmon-pullsecret-deployable -p `echo {\"spec\":{\"template\":{\"data\":{\".dockerconfigjson\":\"$ENTITLED_REGISTRY_DOCKERCONFIG\"}}}}` --type merge -n management-monitoring
+    ./cp4m/monitoring-post-install.sh
 fi
