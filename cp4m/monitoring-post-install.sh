@@ -1,5 +1,5 @@
 #!/bin/bash
-source ../lib/functions.sh
+source lib/functions.sh
 
 log "Adding RemoteAgentDeploy CR to Monitoring installation"
 export PLUGIN_REPO_URL=$(oc get route plugin-repo -n management-monitoring --template '{{.spec.host}}')
