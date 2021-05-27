@@ -65,4 +65,4 @@ log "Updating IM route to use signed certificate"
 oc -n management-infrastructure-management get secret tls-secret -o yaml > backup/tls-secret.yaml
 
 #Update the tls.cert and tls.key with cert.crt and cert.key (right now done manually in UI)
-oc -n management-infrastructure-management create secret generic new-tls-secret --from-file=ca.crt=./chain-ca.crt  --from-file=tls.crt=./cert.crt  --from-file=tls.key=./cert.key
+oc -n management-infrastructure-management create secret generic tls-secret  --from-file=tls.crt=./cert.crt  --from-file=tls.key=./cert.key --save-config --dry-run=client -o yaml | oc apply -f -
