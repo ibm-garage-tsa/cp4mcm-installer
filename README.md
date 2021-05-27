@@ -9,6 +9,8 @@
 - Added roks-certs.sh script that configures usage of Let's Encrypt signed certificates for Cloud Pak for MCM 2.3
   This script is not applied automatically due to 1 unresolved issue: applying the proper certs breaks functionality of SRE Bastion console access
   To use the script run `./cp4m/roks-certs.sh` after installation of Cloud Pak
+- Added ansible.sh script (Experimental) to install and integrate AWX (Ansible Tower upstream project)
+  To use the script run `./cp4m/ansible.sh` after installation of Cloud Pak
 
 5/3/2021
 - Added RHACM Observability support
@@ -42,10 +44,6 @@ This automation currently provides the following installation functionality:
 - MCM Core / RHACM
 - Monitoring Module
 - Infrastructure Management Module (formerly CloudForms), [with sample LDAP](./ldap_schema.md))
-
-In development:
-
-- Ansible Tower
 
 ## Usage:
 
