@@ -4,6 +4,12 @@
 
 **Updates:** 
 
+5/27/2021
+- Added RemoteAgentDeploy CR to allow automatic deployment of  IBM Monitoring DataProvider to managed clusters
+- Added roks-certs.sh script that configures usage of Let's Encrypt signed certificates for Cloud Pak for MCM 2.3
+  This script is not applied automatically due to 1 unresolved issue: applying the proper certs breaks functionality of SRE Bastion console access
+  To use the script run `./cp4m/roks-certs.sh` after installation of Cloud Pak
+
 5/3/2021
 - Added RHACM Observability support
 
