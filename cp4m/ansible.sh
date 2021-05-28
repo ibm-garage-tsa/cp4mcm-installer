@@ -113,3 +113,17 @@ chmod +x awx.sh
 #
 log "Listing out the AWX admin user credentials."
 execlog oc -n ansible get secret awx-admin-password -o jsonpath="{.data.password}" | base64 --decode
+
+if [[ "$CP4MCM_INFRASTRUCTUREMANAGEMENT_ENABLED" == "true" ]];
+then
+    #
+    # Integrating CP4MCM IAM with LDAP for IM
+    #
+    log "Enabling CAM integration with Ansible"
+    oc patch ManageService cam -n management-infrastructure-management --patch '{"spec":{"camAnsibleProvider":{"replicaCount":"0"}}}' --type=merge
+fi
+
+log "Cleanup"
+rm awx.sh
+rm cert.crt
+rm cert.key
