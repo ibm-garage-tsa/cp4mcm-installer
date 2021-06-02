@@ -12,12 +12,12 @@ if [[ "$ROKS" == "true" ]]; then
 
 log "Patching inventory in ROKS"
 # Patch to disable ibm-sre-inventory-operator
-kubectl patch deployment ibm-sre-inventory-operator -n kube-system -p '{"spec":{"replicas":0}}'
+oc patch deployment ibm-sre-inventory-operator -n kube-system -p '{"spec":{"replicas":0}}'
 # Patch it to set proper securityContext
-kubectl patch statefulset sre-inventory-inventory-redisgraph -n kube-system -p '{"spec":{"template":{"spec":{"securityContext":{"fsGroup":1001,"runAsUser":1001}}}}}'
+oc patch statefulset sre-inventory-inventory-redisgraph -n kube-system -p '{"spec":{"template":{"spec":{"securityContext":{"fsGroup":1001,"runAsUser":1001}}}}}'
 # Delete to trigger a pod restart
-kubectl delete pod "`kubectl get pod -n kube-system | grep sre-inventory-inventory-rhacmcollector | cut -d " " -f 1`" -n kube-system
-kubectl delete pod "`kubectl get pod -n kube-system | grep sre-inventory-inventory-cfcollector | cut -d " " -f 1`" -n kube-system
+oc delete pod "`oc get pod -n kube-system | grep sre-inventory-inventory-rhacmcollector | cut -d " " -f 1`" -n kube-system
+oc delete pod "`oc get pod -n kube-system | grep sre-inventory-inventory-cfcollector | cut -d " " -f 1`" -n kube-system
 
 fi
 
