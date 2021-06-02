@@ -30,10 +30,10 @@ then
     ./cp4m/CloudFormsandOIDC.sh
 
     #
-    # Patching CAM
+    # Patching IM
     #
-    log "Patching CP4MCM IM's CAM"
-    ./cp4m/patch-im-cam.sh
+    log "Patching CP4MCM IM module"
+    ./cp4m/patch-im.sh
 fi
 
 

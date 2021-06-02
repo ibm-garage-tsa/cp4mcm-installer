@@ -159,7 +159,7 @@ function detect_storage_classes {
         # The cluster is not running on ROKS then we will assume it is using OCS
         #
         if [ -z "$IBMROKS" ]; then
-            ROKS="false"
+            export ROKS="false"
             ROKSREGION=""
             ROKSZONE=""
             # check storage class
@@ -167,7 +167,7 @@ function detect_storage_classes {
             CP4MCM_FILE_STORAGECLASS="ocs-storagecluster-cephfs"
             CP4MCM_FILE_GID_STORAGECLASS="ocs-storagecluster-cephfs"
         else
-            ROKS="true"
+            export ROKS="true"
             ROKSREGION=$(oc get node -o yaml | grep region | cut -d: -f2 | head -1 | tr -d '[:space:]')
             # ROKSZONE for storage does not seems to be used anymore
             ROKSZONE=""
@@ -178,7 +178,7 @@ function detect_storage_classes {
         fi
     else
         echo "Storage classes provided. We will use the one you provided."
-        ROKS="false"
+        export ROKS="false"
         CUSTOM_STORAGE="true"
         CP4MCM_FILE_GID_STORAGECLASS=$CP4MCM_FILE_STORAGECLASS
     fi
