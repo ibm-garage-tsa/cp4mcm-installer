@@ -66,3 +66,30 @@ oc -n management-infrastructure-management get secret tls-secret -o yaml > backu
 
 #Update the tls.cert and tls.key with cert.crt and cert.key (right now done manually in UI)
 oc -n management-infrastructure-management create secret generic tls-secret  --from-file=tls.crt=./cert.crt  --from-file=tls.key=./cert.key --save-config --dry-run=client -o yaml | oc apply -f -
+
+# Fixing SRE bastion Console Access
+# Referred in https://www.ibm.com/docs/pl/cloud-paks/cp-management/2.3.x?topic=tmc-cannot-onboard-vms-in-console-access-page-x509-error
+
+log "Updating the cs-ca-certificate secret used by Teleport"
+
+oc delete secret teleport-credential -n kube-system
+oc get pods -n kube-system |grep sre-bastion-teleport-auth | awk '{print $1}' |xargs oc -n kube-system delete pod
+sleep 120
+recreated=$(oc -n kube-system get secret teleport-credential --ignore-not-found --no-headers |wc -l)
+
+if [ $recreated -eq 1 ]; then
+  log "teleport-credential secret successfully recreated"
+else
+  log "teleport-credential secret not recreated, retrying..."
+  oc get pods -n kube-system |grep sre-bastion-teleport-auth | awk '{print $1}' |xargs oc -n kube-system delete pod
+  sleep 120
+fi
+
+recreated=$(oc -n kube-system get secret teleport-credential --ignore-not-found --no-headers |wc -l)
+
+if [ $recreated -eq 1 ]; then
+  log "teleport-credential secret successfully recreated"
+  oc get pods -n kube-system |grep sre-bastion-bastion-backend-deploy | awk '{print $1}' |xargs oc -n kube-system delete pod
+fi
+
+log "Cloud Pak for Multicloud Management on ROKS is now using Let's Encrypt signed certificates"
