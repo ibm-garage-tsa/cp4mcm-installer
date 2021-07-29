@@ -30,6 +30,10 @@ oc adm policy add-scc-to-user anyuid system:serviceaccount:$MINIO_NAMESPACE:$MIN
 # Installing MinIO Helm Chart
 # TODO(Bright): To use MinIO Operator instead
 #
+log "Adding stable Helm Chart repo, if needed"
+helm repo add stable https://charts.helm.sh/stable
+log "Updating Helm repo"
+helm repo update
 log "Installing MinIO Helm Chart"
 helm install $MINIO_CHART_NAME stable/minio \
   --namespace $MINIO_NAMESPACE \
