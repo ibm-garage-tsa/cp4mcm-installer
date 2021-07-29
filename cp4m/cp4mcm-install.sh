@@ -23,13 +23,28 @@ if [ "$answer" != "Y" -a "$answer" != "y" ]; then
     exit 99
 fi
 
+missed_tools=0
+echo "Firstly, let's do a quick check for required tools..."
+# check oc
+if is_required_tool_missed "oc"; then missed_tools=$((missed_tools+1)); fi
+# check cloudctl
+if is_required_tool_missed "cloudctl"; then missed_tools=$((missed_tools+1)); fi
+# check jq
+if is_required_tool_missed "jq"; then missed_tools=$((missed_tools+1)); fi
+# check helm
+if is_required_tool_missed "helm"; then missed_tools=$((missed_tools+1)); fi
+# final check
+if [[ $missed_tools > 0 ]]; then
+  echo "Abort! There are some required tools missing, please have a check."
+  exit 98
+fi
+
 echo "Great! Let's proceed the installation... "
 
 #
 # RHACM Installation
 #
-if [[ "$CP4MCM_RHACM_ENABLED" == "true" ]];
-then
+if [[ "$CP4MCM_RHACM_ENABLED" == "true" ]]; then
   # install RHACM core components
   source rhacm/1-rhacm.sh
 
@@ -419,16 +434,18 @@ progress-bar 180
 #
 # Keep waiting and checking the installation progress
 #
+log "Checking the installation progress till completion...be patient!"
 status
 
 #
-# Print out the route for RHACM access
+# Print out the route for RHACM access, if RHACM is enabled
 #
 if [[ "$CP4MCM_RHACM_ENABLED" == "true" ]]; 
 then
   rhacm_route
 fi
+
 #
-# Keep waiting and checking the installation progress
+# Print out the admin credential for CP4MCM access
 #
 cscred
