@@ -75,7 +75,7 @@ log "Configuring LDAP connection for Common Services."
 execlog cloudctl iam ldap-create my_ldap --basedn 'dc=ibm,dc=com' --binddn 'cn=admin,dc=ibm,dc=com' --binddn-password Passw0rd --server ldap://ldap-service.ldap.svc.cluster.local:389 --group-filter '(&(cn=%v)(objectclass=groupOfUniqueNames))' --group-id-map '*:cn' --group-member-id-map 'groupOfUniqueNames:uniqueMember' --user-filter '(&(uid=%v)(objectclass=inetOrgPerson))' --user-id-map '*:uid'
 execlog cloudctl iam team-create operations
 execlog cloudctl iam group-import --group operations -f
-execlog cloudctl iam team-add-groups operations ClusterAdministrator -g operations
+execlog cloudctl iam team-add-groups operations Administrator -g operations
 execlog cloudctl iam resource-add operations -r "crn:v1:icp:private:k8:mycluster:n/default:::"
 
 #
