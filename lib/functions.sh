@@ -198,3 +198,14 @@ function validate_storageclass {
 function entitled_registry_test {
     echo "Testing the entitled registry key provided by pulling a sample image."
 }
+
+function is_required_tool_missed {
+    echo -n "Checking required tool: $1 ... "
+    if [ -x "$(command -v $1)" ]; then
+        echo "installed"
+        false
+    else
+        echo "not installed"
+        true
+    fi
+}
