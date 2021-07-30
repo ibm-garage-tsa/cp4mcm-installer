@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 source lib/functions.sh
 
@@ -58,6 +58,24 @@ oc -n management-infrastructure-management cp custom_nginx.key $camproxypod:/var
 
 oc -n management-infrastructure-management delete pod $camproxypod
 
+#ICAM part
+
+log "Updating icam cp-proxy route to use signed certificate"
+
+oc -n management-monitoring get secret icam-ingress-tls -o yaml > backup/icam-ingress-tls.yaml
+
+oc create secret generic icam-ingress-tls --dry-run -o yaml --from-file=tls.crt=./cert.crt --from-file=tls.key=./cert.key --from-file=ca.crt=./chain-ca.crt | kubectl apply -f -
+
+log "Restarting ICAM deployments"
+
+oc scale --replicas=0 -n management-monitoring deployment monitoring-agentbootstrap monitoring-amui monitoring-ibm-cem-cem-users
+
+log "Waiting 60s for pods to terminate"
+
+sleep 60
+
+oc scale --replicas=1 -n management-monitoring deployment monitoring-agentbootstrap monitoring-amui monitoring-ibm-cem-cem-users
+
 #IM part
 
 log "Updating IM route to use signed certificate"
@@ -90,6 +108,14 @@ recreated=$(oc -n kube-system get secret teleport-credential --ignore-not-found 
 if [ $recreated -eq 1 ]; then
   log "teleport-credential secret successfully recreated"
   oc get pods -n kube-system |grep sre-bastion-bastion-backend-deploy | awk '{print $1}' |xargs oc -n kube-system delete pod
+fi
+
+# Ansible AWX part
+
+ansible_installed=$(oc -n ansible get secret tls-secret --ignore-not-found --no-headers |wc -l)
+
+if [ $ansible_installed -eq 1 ]; then
+oc -n ansible create secret generic tls-secret  --from-file=tls.crt=./cert.crt  --from-file=tls.key=./cert.key --save-config --dry-run=client -o yaml | oc apply -f -
 fi
 
 log "Cloud Pak for Multicloud Management on ROKS is now using Let's Encrypt signed certificates"
