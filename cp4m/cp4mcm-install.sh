@@ -111,27 +111,6 @@ spec:
 EOF
 
 #
-# Creating Common Services CR
-# 
-# To further customize Common Services, check this out:
-# https://www.ibm.com/docs/en/cloud-paks/cp-management/2.3.x?topic=configuration-configuring-common-services
-#
-# log "Creating Common Services CR"
-# oc apply -f - <<EOF
-# apiVersion: operator.ibm.com/v3
-# kind: CommonService
-# metadata:
-#   name: common-service
-#   namespace: ibm-common-services
-# spec:
-#   size: medium
-# EOF
-
-# log "Waiting for Common Services' CR to be ready (180 seconds)"
-# progress-bar 180
-
-
-#
 # Creating CP4MCM CatalogSource
 #
 log "Creating CP4MCM CatalogSource"
@@ -174,6 +153,18 @@ EOF
 # Waiting for both Common Services and CP4MCM Subscription to be ready
 #
 log "Waiting for both Common Services and CP4MCM Subscription to be ready (180 seconds)"
+progress-bar 180
+
+#
+# Creating Common Services CR
+# 
+# To further customize Common Services, check this out:
+# https://www.ibm.com/docs/en/cloud-paks/cp-management/2.3.x?topic=configuration-configuring-common-services
+#
+log "Creating Common Services CR"
+oc apply -f yaml/common-services.yaml
+
+log "Waiting for Common Services' CR to be ready (180 seconds)"
 progress-bar 180
 
 #

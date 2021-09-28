@@ -140,7 +140,7 @@ EOF
 # Create IMInstall
 #
 log "Creating CloudForms IMInstall"
-oc create -f - <<EOF
+oc apply -f - <<EOF
 apiVersion: infra.management.ibm.com/v1alpha1
 kind: IMInstall
 metadata:
@@ -172,7 +172,7 @@ log "Creating IM Connection Resource"
 #
 # Create Connection
 #
-oc create -f - <<EOF
+oc apply -f - <<EOF
  apiVersion: infra.management.ibm.com/v1alpha1
  kind: Connection
  metadata:
