@@ -60,7 +60,7 @@ execlog cloudctl iam oauth-client-register -f registration.json
 # Create imconnectionsecret
 #
 log "Creating imconnectionsecret."
-oc create -f - <<EOF
+oc apply -f - <<EOF
 kind: Secret                                                                                                     
 apiVersion: v1                                                                                                   
 metadata:                                                                                                        
