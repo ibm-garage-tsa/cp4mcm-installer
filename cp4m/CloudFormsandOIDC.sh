@@ -60,7 +60,7 @@ execlog cloudctl iam oauth-client-register -f registration.json
 # Create imconnectionsecret
 #
 log "Creating imconnectionsecret."
-oc create -f - <<EOF
+oc apply -f - <<EOF
 kind: Secret                                                                                                     
 apiVersion: v1                                                                                                   
 metadata:                                                                                                        
@@ -140,7 +140,7 @@ EOF
 # Create IMInstall
 #
 log "Creating CloudForms IMInstall"
-oc create -f - <<EOF
+oc apply -f - <<EOF
 apiVersion: infra.management.ibm.com/v1alpha1
 kind: IMInstall
 metadata:
@@ -172,7 +172,7 @@ log "Creating IM Connection Resource"
 #
 # Create Connection
 #
-oc create -f - <<EOF
+oc apply -f - <<EOF
  apiVersion: infra.management.ibm.com/v1alpha1
  kind: Connection
  metadata:
