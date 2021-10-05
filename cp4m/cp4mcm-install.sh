@@ -318,7 +318,7 @@ oc patch installation.orchestrator.management.ibm.com ibm-management -n $CP4MCM_
               "couchdbdata": 5Gi,
               "datalayerjobs": 5Gi,
               "elasticdata": 5Gi,
-              "kafkadata": 10Gi,
+              "kafkadata": 25Gi,
               "zookeeperdata": 1Gi
             }
           }
