@@ -4,6 +4,11 @@
 
 **Updates:** 
 
+10/07/2021
+- Fixed the size of PVC for Kafka (10G -> 25G)
+- Fixed the roks-certs.sh to handle Teleport (SRE Bastion console access) and AWX route
+- Fixed the Common Services CRD to decrease a footprint (medium -> small with some changes)
+
 5/27/2021
 - Added RemoteAgentDeploy CR to allow automatic deployment of  IBM Monitoring DataProvider to managed clusters
 - Added roks-certs.sh script that configures usage of Let's Encrypt signed certificates for Cloud Pak for MCM 2.3
