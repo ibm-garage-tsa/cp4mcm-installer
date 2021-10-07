@@ -116,6 +116,9 @@ ansible_installed=$(oc -n ansible get secret tls-secret --ignore-not-found --no-
 
 if [ $ansible_installed -eq 1 ]; then
 oc -n ansible create secret generic tls-secret  --from-file=tls.crt=./cert.crt  --from-file=tls.key=./cert.key --save-config --dry-run=client -o yaml | oc apply -f -
+aurl=$(oc -n ansible get route awx -o jsonpath="{.spec.host}")
+oc -n ansible create route edge awx --service=awx-service  --cert=./cert.crt  --key=./cert.key  --ca-cert=./chain-ca.crt  --hostname=$aurl  --insecure-policy='Redirect'  --dry-run=client -o yaml  | oc apply -f -
+
 fi
 
 log "Cloud Pak for Multicloud Management on ROKS is now using Let's Encrypt signed certificates"
