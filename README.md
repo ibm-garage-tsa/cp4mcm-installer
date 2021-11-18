@@ -4,6 +4,10 @@
 
 **Updates:** 
 
+18/11/2021
+
+**WARNING** CP4MCM 2.3 FP2 released on Nov 5th, 2021 created several issues with this installer, especially when installing on ROKS. DO NOT expect smooth install until further notice.
+
 10/07/2021
 - Fixed the size of PVC for Kafka (10G -> 25G)
 - Fixed the roks-certs.sh to handle Teleport (SRE Bastion console access) and AWX route
